@@ -1,4 +1,4 @@
-package Test_Base;
+package GUI.Test_Base;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +24,7 @@ public class TestBase {
             if (driver.get() == null) {
                 WebDriverManager.chromedriver().setup();
                 driver.set(new ChromeDriver());
+                driver.get().get(Global_Constant.URL);
                 driver.get().manage().window().maximize();
             }
 
@@ -32,6 +33,7 @@ public class TestBase {
             if (driver.get() == null) {
                 WebDriverManager.firefoxdriver().setup();
                 driver.set(new FirefoxDriver());
+                driver.get().get(Global_Constant.URL);
                 driver.get().manage().window().maximize();
             }
         }

@@ -1,0 +1,93 @@
+/* =========================
+   FIX LEFT SIDEBAR VISIBILITY
+   ========================= */
+
+/* Sidebar background */
+.side-nav,
+.side-nav .side-nav-wrapper {
+    background-color: #0f2a44 !important;
+}
+
+/* Sidebar text */
+.side-nav a,
+.side-nav span,
+.side-nav li {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+/* Sidebar icons */
+.side-nav i,
+.side-nav svg {
+    fill: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Active menu item */
+.side-nav .active,
+.side-nav .active a {
+    background-color: #1f6feb !important;
+    color: #ffffff !important;
+}
+
+/* Hover effect */
+.side-nav li:hover,
+.side-nav a:hover {
+    background-color: #163a5f !important;
+    color: #ffffff !important;
+}
+
+/* Collapsed sidebar icon visibility */
+.side-nav-collapsed i,
+.side-nav-collapsed svg {
+    fill: #ffffff !important;
+    color: #ffffff !important;
+}
+/* ================================
+   FORCE SIDEBAR ICON VISIBILITY
+   ================================ */
+
+/* Main sidebar container */
+.side-nav {
+    background-color: #0f2a44 !important;
+}
+
+/* Text inside sidebar */
+.side-nav * {
+    color: #ffffff !important;
+}
+
+/* SVG icons */
+.side-nav svg,
+.side-nav svg path {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Font icons (if any) */
+.side-nav i {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Pseudo-element icons (::before) */
+.side-nav li::before,
+.side-nav a::before {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Active item */
+.side-nav .active,
+.side-nav .active * {
+    background-color: #1f6feb !important;
+    color: #ffffff !important;
+}
+
+/* Hover */
+.side-nav li:hover,
+.side-nav li:hover * {
+    background-color: #163a5f !important;
+    color: #ffffff !important;
+}

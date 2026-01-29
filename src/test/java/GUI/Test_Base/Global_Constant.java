@@ -1,4 +1,4 @@
-package Test_Base;
+package GUI.Test_Base;
 
 public class Global_Constant {
 
