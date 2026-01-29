@@ -4,6 +4,7 @@ import GUI.ReportSection.ExtentLogger;
 import GUI.Test_Base.Generic;
 import GUI.Test_Base.TestBase;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -15,7 +16,6 @@ import java.time.Duration;
 import java.util.List;
 
 public class Home_Page extends TestBase {
-
     Home_Page.HomePageObjects homePageObjects;
    Generic gl;
 
@@ -39,7 +39,7 @@ public class Home_Page extends TestBase {
         @FindBy(xpath = "//div[normalize-space()='Gate']")
         public WebElement GATE_LINK;
 
-        @FindBy(xpath = "//i[@class='icon-edit-sales-office pssgui-design-sub-heading-2a ng-scope']")
+        @FindBy(xpath = "//i[contains(@class,'icon-edit-sales-office')]")
         public WebElement POS_BUTTON;
 
         @FindBy(xpath = "(//md-select-value//span[contains(@class,'md-select-icon')])[1]")
@@ -86,44 +86,51 @@ public class Home_Page extends TestBase {
         gl.waitForLoaderToDisappear();
     }
 
+    private void selectMdOptionByText(String text) {
+        WebDriverWait wait = new WebDriverWait(getDriver(), 20);
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
+
+        By option = By.xpath("//md-option//div[normalize-space()='" + text + "']");
+
+        WebElement element = wait.until(
+                ExpectedConditions.presenceOfElementLocated(option)
+        );
+
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+        js.executeScript("arguments[0].click();", element);
+    }
+
     public void ChangePOS(String POS, String currency) {
         try {
             ExtentLogger.pass("I Change the POS and Currency");
-            WebDriverWait wait = new WebDriverWait(getDriver(), 20);
+            WebDriverWait wait = new WebDriverWait(getDriver(), 30);
+            JavascriptExecutor js = (JavascriptExecutor) getDriver();
 
-            // wait for loader overlay to disappear
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                    By.cssSelector(".hpe-pssgui.loading-wrapper")));
+            WebElement posBtn = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(
+                            By.xpath("//i[contains(@class,'icon-edit-sales-office')]")
+                    )
+            );
 
-            gl.ElementToBeClickable(homePageObjects.POS_BUTTON);
-            homePageObjects.POS_BUTTON.click();
+            wait.until(ExpectedConditions.elementToBeClickable(posBtn));
+            js.executeScript("arguments[0].scrollIntoView({block:'center'});", posBtn);
+            js.executeScript("arguments[0].click();", posBtn);
             gl.WaitForProfileLoad();
-            gl.ElementToBeClickable(homePageObjects.CHANGE_SALES_OFFICE_DROPDOWN);
             homePageObjects.CHANGE_SALES_OFFICE_DROPDOWN.click();
+            selectMdOptionByText(POS);
             gl.WaitForProfileLoad();
-            for (WebElement pos : homePageObjects.POS_NAMES) {
-                if (POS.equalsIgnoreCase(pos.getText())) {
-                    pos.click();
-                    break;
-                }
-            }
-            gl.ElementToBeClickable(homePageObjects.CHANGE_CURRENCY_DROPDOWN);
             homePageObjects.CHANGE_CURRENCY_DROPDOWN.click();
-            gl.WaitForProfileLoad();
-            for (WebElement curncy : homePageObjects.CURRENCY_NAMES) {
-                if (currency.equalsIgnoreCase(curncy.getText())) {
-                    curncy.click();
-                    break;
-                }
-            }
+            selectMdOptionByText(currency);
             gl.WaitForProfileLoad();
             ExtentLogger.attachScreenshotBase64();
             homePageObjects.OK_BUTTON.click();
-            gl.waitForLoaderToDisappear();
-        } catch (Exception e) {
-            ExtentLogger.fail("Step failed", e);
-        }
+           gl.waitForLoaderToDisappear();
 
+        } catch (Exception e) {
+            ExtentLogger.fail("Change POS step failed", e);
+        }
     }
-    }
+
+
+}
 

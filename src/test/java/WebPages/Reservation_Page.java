@@ -32,6 +32,12 @@ public class Reservation_Page extends TestBase {
 
         @FindBy(xpath = "//input[@class='md-datepicker-input']")
         public WebElement DATE_FIELD;
+
+        @FindBy(xpath = "//md-checkbox[@name='flightReturn']//div[@class='md-container md-ink-ripple']")
+        public WebElement RETURN_FLIGHT;
+
+        @FindBy(xpath = "//md-datepicker[@class='_md-datepicker-has-triangle-icon ng-isolate-scope ng-valid-required ng-valid-maxdate ng-valid-filtered ng-valid-valid flex ng-empty ng-dirty ng-valid-parse ng-valid ng-valid-mindate ng-touched']")
+        public WebElement RETURN_DATE;
     }
 
 
@@ -41,9 +47,9 @@ public class Reservation_Page extends TestBase {
         gl.WaitForProfileLoad();
     }
 
-    public void Selectitenary(String origin, String destination, String date){
-        ExtentLogger.pass("I am entering origin, destination and date");
-        try{
+    public void Selectitenary(String origin, String destination) {
+        ExtentLogger.pass("I am entering origin, destination");
+        try {
             reservationPageObject.FROM_CITY.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.FROM_CITY.sendKeys(Keys.DELETE);
             gl.WaitForProfileLoad();
@@ -52,10 +58,19 @@ public class Reservation_Page extends TestBase {
             gl.WaitForProfileLoad();
             reservationPageObject.TO_CITY.sendKeys(destination);
             reservationPageObject.TO_CITY.sendKeys(Keys.ENTER);
+            ExtentLogger.attachScreenshotBase64();
+            gl.WaitForProfileLoad();
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+    }
+    public void SelectDateForOneWayBooking(String date) {
+        ExtentLogger.pass("I am entering date for one way booking");
+        try {
             gl.WaitForProfileLoad();
             reservationPageObject.DATE_FIELD.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.DATE_FIELD.sendKeys(Keys.DELETE);
-            gl.WaitForProfileLoad();
             String newdate = gl.getDateFromOffset(date);
             gl.WaitForProfileLoad();
             reservationPageObject.DATE_FIELD.sendKeys(newdate);
@@ -65,4 +80,21 @@ public class Reservation_Page extends TestBase {
         }
     }
 
+    public void SelectReturnBooking(String date){
+        ExtentLogger.pass("I select the return flight date");
+        try{
+            gl.WaitForProfileLoad();
+            reservationPageObject.RETURN_FLIGHT.click();
+            gl.WaitForProfileLoad();
+            reservationPageObject.RETURN_DATE.sendKeys(Keys.CONTROL + "a");
+            reservationPageObject.RETURN_DATE.sendKeys(Keys.DELETE);
+            String newdate = gl.getDateFromOffset(date);
+            gl.WaitForProfileLoad();
+            reservationPageObject.RETURN_DATE.sendKeys(newdate);
+            ExtentLogger.attachScreenshotBase64();
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+    }
 }

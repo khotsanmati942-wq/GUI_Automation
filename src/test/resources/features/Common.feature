@@ -9,11 +9,14 @@ Feature: Login
     And I click on Reservation module
 #    And I click on Check-in module
 #    And I click on gate module
-   And I click on New Order tab to create a PNR
-   And I select "<Origincity>" and "<Destinationcity>" and date of journey as "<Date>"
+    And I click on New Order tab to create a PNR
+    And I select the from and to city "<Origincity>" and "<Destinationcity>"
+    And I enter Start Date "<StartDate>" for one way booking
+    And I select return booking with "<StartDate1>"
+
 
     Examples:
-      | salesoffice  | currency | Origincity | Destinationcity | Date    |
-      | PTY ATO      | USD      | PTY        | LAX             | 01 days |
+      | salesoffice  | currency | Origincity | Destinationcity | StartDate | StartDate1 |
+      | PTY ATO      | USD      | PTY        | LAX             | 01 days   | 02 days    |
 
 

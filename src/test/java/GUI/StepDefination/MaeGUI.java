@@ -28,19 +28,20 @@ public class MaeGUI extends StepManager {
 
     @Then("I perform login")
     public void iPerformLogin() {
-        try{
-        ExtentLogger.createNode("I perform login");
-        loginPage.iPerformLogin();
+        try {
+            ExtentLogger.createNode("I perform login");
+            loginPage.iPerformLogin();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
 
     }
+
     @And("I change the POS using {string} and {string}")
     public void iChangeThePOSUsingAnd(String arg0, String arg1) {
-        try{
-        ExtentLogger.createNode("I change the POS using "+arg0+" and "+arg1+" ");
-        homePage.ChangePOS(arg0, arg1);
+        try {
+            ExtentLogger.createNode("I change the POS using " + arg0 + " and " + arg1 + " ");
+            homePage.ChangePOS(arg0, arg1);
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
@@ -48,9 +49,9 @@ public class MaeGUI extends StepManager {
 
     @And("I click on home screen")
     public void iClickOnHomeScreen() {
-        try{
-        ExtentLogger.createNode("I click on home screen");
-        homePage.Clickonlogo();
+        try {
+            ExtentLogger.createNode("I click on home screen");
+            homePage.Clickonlogo();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
@@ -58,9 +59,9 @@ public class MaeGUI extends StepManager {
 
     @And("I click on Reservation module")
     public void iClickOnReservationModule() {
-        try{
-        ExtentLogger.createNode("I click on Reservation module");
-        homePage.ClickOnReservationTab();
+        try {
+            ExtentLogger.createNode("I click on Reservation module");
+            homePage.ClickOnReservationTab();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
@@ -68,9 +69,9 @@ public class MaeGUI extends StepManager {
 
     @And("I click on Check-in module")
     public void iClickOnCheckInModule() {
-        try{
-        ExtentLogger.createNode("I click on Check-in module");
-        homePage.ClickOnCheckinTab();
+        try {
+            ExtentLogger.createNode("I click on Check-in module");
+            homePage.ClickOnCheckinTab();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
@@ -78,9 +79,9 @@ public class MaeGUI extends StepManager {
 
     @And("I click on gate module")
     public void iClickOnGateModule() {
-        try{
-        ExtentLogger.createNode("I click on gate module");
-        homePage.ClickOnGateTab();
+        try {
+            ExtentLogger.createNode("I click on gate module");
+            homePage.ClickOnGateTab();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
@@ -91,20 +92,43 @@ public class MaeGUI extends StepManager {
         try {
             ExtentLogger.createNode("I click on new Order tab to create a PNR");
             reservationPage.ClickOnNewOrderTab();
-        }catch (Exception e) {
+        } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
 
-    @And("I select {string} and {string} and date of journey as {string}")
-    public void iSelectAndAndDateOfJourneyAs(String arg0, String arg1, String arg2) {
-        try{
-        ExtentLogger.createNode("I select "+arg0+" and "+arg1+" and date of journey as "+arg2+" ");
-        reservationPage.Selectitenary(arg0, arg1, arg2 );
-        }catch (Exception e) {
+
+    @And("I select the from and to city {string} and {string}")
+    public void iSelectTheFromAndToCityAnd(String arg0, String arg1) {
+        try {
+            ExtentLogger.createNode("I select " + arg0 + " and " + arg1 + " ");
+            reservationPage.Selectitenary(arg0, arg1);
+        } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
-}
+
+
+    @And("I enter Start Date {string} for one way booking")
+    public void iEnterStartDateForOneWayBooking(String arg0) {
+        try {
+            ExtentLogger.createNode("I select " + arg0 + "");
+            reservationPage.SelectDateForOneWayBooking(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+    }
+
+    @And("I select return booking with {string}")
+    public void iSelectReturnBookingWith(String arg0) {
+        try {
+            ExtentLogger.createNode("I select " + arg0 + "  ");
+            reservationPage.SelectReturnBooking(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+        }
+    }
+
 
 

@@ -53,27 +53,14 @@ public class Generic extends TestBase {
         ));
     }
 
-//    public String getDateFromOffset(String offsetDays) {
-//        int daysToAdd = Integer.parseInt(offsetDays);
-//        LocalDate targetDate = LocalDate.now().plusDays(daysToAdd);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//        return targetDate.format(formatter);
-//    }
-
     public static String getDateFromOffset(String offset) {
-
         String numericValue = offset.replaceAll("[^0-9]", "");
-
         if (numericValue.isEmpty()) {
             throw new IllegalArgumentException("Invalid date offset: " + offset);
         }
-
         int days = Integer.parseInt(numericValue);
-
         LocalDate targetDate = LocalDate.now().plusDays(days);
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
-
         return targetDate.format(formatter);
     }
 
