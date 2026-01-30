@@ -36,7 +36,7 @@ public class Reservation_Page extends TestBase {
         @FindBy(xpath = "//md-checkbox[@name='flightReturn']//div[@class='md-container md-ink-ripple']")
         public WebElement RETURN_FLIGHT;
 
-        @FindBy(xpath = "//md-datepicker[@class='_md-datepicker-has-triangle-icon ng-isolate-scope ng-valid-required ng-valid-maxdate ng-valid-filtered ng-valid-valid flex ng-empty ng-dirty ng-valid-parse ng-valid ng-valid-mindate ng-touched']")
+        @FindBy(xpath = "//md-datepicker[contains(@class,'_md-datepicker')]")
         public WebElement RETURN_DATE;
     }
 
@@ -90,6 +90,7 @@ public class Reservation_Page extends TestBase {
             reservationPageObject.RETURN_DATE.sendKeys(Keys.DELETE);
             String newdate = gl.getDateFromOffset(date);
             gl.WaitForProfileLoad();
+            gl.ElementToBeClickable(reservationPageObject.RETURN_DATE);
             reservationPageObject.RETURN_DATE.sendKeys(newdate);
             ExtentLogger.attachScreenshotBase64();
         } catch (Exception e) {

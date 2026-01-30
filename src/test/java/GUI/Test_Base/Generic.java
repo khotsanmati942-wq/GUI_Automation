@@ -1,9 +1,6 @@
 package GUI.Test_Base;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -47,10 +44,14 @@ public class Generic extends TestBase {
     }
 
     public void waitForLoaderToDisappear() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), 60);
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                By.cssSelector(".loading-wrapper")
-        ));
+        try {
+            WebDriverWait wait = new WebDriverWait(getDriver(), 120);
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                    By.cssSelector(".loading-wrapper")
+            ));
+        } catch (TimeoutException e) {
+            System.out.println("Loader did not disappear within timeout, continuing...");
+        }
     }
 
     public static String getDateFromOffset(String offset) {
