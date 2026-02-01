@@ -128,7 +128,82 @@ public class MaeGUI extends StepManager {
             ExtentLogger.fail("Step failed", e);
         }
         }
+
+    @And("I enter Adult passenger count as {string}")
+    public void iEnterAdultPassengerCountAs(String arg0) {
+        try{
+            ExtentLogger.createNode("I enter Adult passenger count as " + arg0 + " ");
+            reservationPage.AdultPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
     }
+
+    @And("I enter Child passenger count as {string}")
+    public void iEnterChildPassengerCountAs(String arg0) {
+        try{
+            ExtentLogger.createNode("I enter Child passenger count as " + arg0 + " ");
+            reservationPage.ChildPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+    }
+
+    @And("I enter INF passenger count as {string}")
+    public void iEnterINFPassengerCountAs(String arg0) {
+        try{
+            ExtentLogger.createNode("I enter INF passenger count as " + arg0 + " ");
+            reservationPage.INFPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+    }
+
+    @And("I enter INS passenger count as {string}")
+    public void iEnterINSPassengerCountAs(String arg0) {
+        try{
+            ExtentLogger.createNode("I enter INS passenger count as " + arg0 + " ");
+            reservationPage.INSPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+    }
+
+    @And("I click on search button")
+    public void iClickOnSearchButton() {
+        try{
+            ExtentLogger.createNode("I click on search button");
+            reservationPage.SerachButton();
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+        }
+
+    @And("I select class of service as {string}")
+    public void iSelectClassOfServiceAs(String arg0) {
+        try{
+            ExtentLogger.createNode("I select the class of service");
+            reservationPage.SelectSeatFromClass(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+        }
+
+    @And("I Select pricing option as {string}")
+    public void iSelectPricingOptionAs(String arg0) {
+        try{
+            ExtentLogger.createNode("I Select pricing option as "+arg0+" ");
+            reservationPage.SelectPriceOption(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+
+    }
+}
+
+
 
 
 

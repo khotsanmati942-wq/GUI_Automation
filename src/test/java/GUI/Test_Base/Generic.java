@@ -4,7 +4,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -22,6 +21,7 @@ public class Generic extends TestBase {
     public void ElementToBeClickable(By locator) {
        wait = new WebDriverWait(getDriver(), 30);
         wait.until(ExpectedConditions.elementToBeClickable(locator));
+
     }
 
     public void ElementToBeClickable(WebElement element) {

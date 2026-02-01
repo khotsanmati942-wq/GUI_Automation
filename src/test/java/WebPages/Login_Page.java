@@ -14,11 +14,16 @@ public class Login_Page extends TestBase {
 
     Login_Page.LoginPageObjects loginPageObjects;
     Generic gl;
+    Home_Page.HomePageObjects homePageObjects;
+    Home_Page homePage;
 
     public Login_Page() {
         loginPageObjects = new LoginPageObjects();
-        PageFactory.initElements(getDriver(), loginPageObjects);
         gl = new Generic();
+        homePageObjects = new Home_Page.HomePageObjects();
+        homePage = new Home_Page();
+        PageFactory.initElements(getDriver(), loginPageObjects);
+        PageFactory.initElements(getDriver(), homePageObjects);
     }
 
     static class LoginPageObjects {
@@ -50,6 +55,9 @@ public class Login_Page extends TestBase {
             ExtentLogger.attachScreenshotBase64();
             gl.WaitForProfileLoad();
             gl.ClickElement(loginPageObjects.Login);
+            gl.WaitForProfileLoad();
+
+
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
