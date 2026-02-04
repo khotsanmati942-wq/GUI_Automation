@@ -6,6 +6,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Generic extends TestBase {
 
@@ -64,6 +67,101 @@ public class Generic extends TestBase {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
         return targetDate.format(formatter);
     }
+
+
+    public static String getRandomName() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder name = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            name.append(chars.charAt((int) (Math.random() * chars.length())));
+        }
+        name.append(" ");
+        for (int i = 0; i < 5; i++) {
+            name.append(chars.charAt((int) (Math.random() * chars.length())));
+        }
+        return name.toString();
+    }
+
+    public static String getDOB(String passengerType) {
+
+        if (passengerType == null) {
+            throw new IllegalArgumentException("Passenger type cannot be null");
+        }
+
+        LocalDate dob;
+        LocalDate today = LocalDate.now();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        switch (passengerType.trim().toUpperCase()) {
+
+            case "ADULT":
+                // 25–60 years
+                dob = today.minusYears(random.nextInt(25, 60))
+                        .minusDays(random.nextInt(1, 365));
+                break;
+
+            case "CHILD":
+                // 2–11 years
+                dob = today.minusYears(random.nextInt(2, 12))
+                        .minusDays(random.nextInt(1, 365));
+                break;
+
+            case "INFANT":
+                // 0–23 months
+                dob = today.minusMonths(random.nextInt(1, 24))
+                        .minusDays(random.nextInt(0, 28));
+                break;
+
+            case "INS":
+                // 12–23 months
+                dob = today.minusMonths(random.nextInt(12, 24))
+                        .minusDays(random.nextInt(0, 28));
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported passenger type: " + passengerType
+                );
+        }
+
+        return dob.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+    }
+
+    public static Map<String, String> generatePassenger(
+            int countIndex, String passengerType) {
+        Map<String, String> passenger = new HashMap<>();
+        String[] name = getRandomName().split(" ");
+        passenger.put("FIRST_NAME", name[0]);
+        passenger.put("LAST_NAME", name[1]);
+        passenger.put("DOB", getDOB(passengerType));
+        String gender;
+        switch (passengerType.trim().toUpperCase()) {
+            case "ADULT":
+                case "CHILD":
+                    gender = Math.random() < 0.5 ? "Male" : "Female";
+                    break;
+
+            case "INFANT":
+                gender = "Male";
+                break;
+
+            case "INS":
+                gender = "Female";
+                break;
+
+            default:
+
+                throw new IllegalArgumentException("Invalid passenger type");
+
+        }
+        passenger.put("GENDER", gender);
+        passenger.put("TYPE", passengerType.toUpperCase());
+        passenger.put("INDEX", String.valueOf(countIndex));
+        return passenger;
+
+    }
+
+
 
 }
 

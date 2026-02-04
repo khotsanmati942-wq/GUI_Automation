@@ -8,42 +8,46 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class TestBase {
 
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private static final Object LOCK = new Object();
+    private static boolean wdmInit = false;
 
+    static {
+        // 🚨 CRITICAL FIX FOR "public" NumberFormatException
+        System.setProperty("wdm.chromeDriverCfT", "false");
+    }
 
     public static WebDriver getDriver() {
         if (driver.get() == null) {
-            setup();
+            createDriver();
         }
         return driver.get();
     }
 
-    public static void setup() {
+    public static void createDriver() {
+        synchronized (LOCK) {
 
-        if (Global_Constant.BROWSER.equalsIgnoreCase("chrome")) {
+            if (!wdmInit) {
 
-            if (driver.get() == null) {
-                WebDriverManager.chromedriver().setup();
-                driver.set(new ChromeDriver());
-                driver.get().get(Global_Constant.URL);
-                driver.get().manage().window().maximize();
-            }
+                WebDriverManager.chromedriver()
+                        .avoidBrowserDetection()
+                        .setup();
 
-        } else if (Global_Constant.BROWSER.equalsIgnoreCase("firefox")) {
+                WebDriverManager.firefoxdriver()
+                        .avoidBrowserDetection()
+                        .setup();
 
-            if (driver.get() == null) {
-                WebDriverManager.firefoxdriver().setup();
-                driver.set(new FirefoxDriver());
-                driver.get().get(Global_Constant.URL);
-                driver.get().manage().window().maximize();
-            }
-        }
-    }
-        public static void quitdriver () {
-            if (driver.get() != null) {
-                driver.get().quit();
-                driver.remove();
+                wdmInit = true;
             }
         }
     }
 
 
+
+
+    public static void quitDriver() {
+        if (driver.get() != null) {
+            driver.get().quit();
+            driver.remove();
+        }
+    }
+}

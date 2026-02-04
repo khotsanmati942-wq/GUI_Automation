@@ -20,7 +20,7 @@ public class MaeGUI extends StepManager {
     public void i_navigate_to_the_url() {
         try {
             ExtentLogger.createNode("I navigate to the URL");
-            TestBase.setup();
+            TestBase.createDriver();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
@@ -129,45 +129,7 @@ public class MaeGUI extends StepManager {
         }
         }
 
-    @And("I enter Adult passenger count as {string}")
-    public void iEnterAdultPassengerCountAs(String arg0) {
-        try{
-            ExtentLogger.createNode("I enter Adult passenger count as " + arg0 + " ");
-            reservationPage.AdultPassengerCount(arg0);
-        } catch (Exception e) {
-            ExtentLogger.fail("Step failed", e);
-        }
-    }
 
-    @And("I enter Child passenger count as {string}")
-    public void iEnterChildPassengerCountAs(String arg0) {
-        try{
-            ExtentLogger.createNode("I enter Child passenger count as " + arg0 + " ");
-            reservationPage.ChildPassengerCount(arg0);
-        } catch (Exception e) {
-            ExtentLogger.fail("Step failed", e);
-        }
-    }
-
-    @And("I enter INF passenger count as {string}")
-    public void iEnterINFPassengerCountAs(String arg0) {
-        try{
-            ExtentLogger.createNode("I enter INF passenger count as " + arg0 + " ");
-            reservationPage.INFPassengerCount(arg0);
-        } catch (Exception e) {
-            ExtentLogger.fail("Step failed", e);
-        }
-    }
-
-    @And("I enter INS passenger count as {string}")
-    public void iEnterINSPassengerCountAs(String arg0) {
-        try{
-            ExtentLogger.createNode("I enter INS passenger count as " + arg0 + " ");
-            reservationPage.INSPassengerCount(arg0);
-        } catch (Exception e) {
-            ExtentLogger.fail("Step failed", e);
-        }
-    }
 
     @And("I click on search button")
     public void iClickOnSearchButton() {
@@ -200,6 +162,61 @@ public class MaeGUI extends StepManager {
         }
 
 
+    }
+
+    @And("I enter Passenger details")
+    public void iEnterPassengerDetails() {
+        try{
+            ExtentLogger.createNode("I enter Passenger details");
+            reservationPage.FillPassengerDetails();
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+
+    }
+
+    @And("I enter Adult passenger count as {int}")
+    public void iEnterAdultPassengerCountAsADT(int arg0) {
+        try{
+            ExtentLogger.createNode("I enter Adult passenger count as " + arg0 + " ");
+            reservationPage.AdultPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+    }
+
+    @And("I enter Child passenger count as {int}")
+    public void iEnterChildPassengerCountAsCHD(int arg0) {
+        try{
+            ExtentLogger.createNode("I enter Child passenger count as " + arg0 + " ");
+            reservationPage.ChildPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+    }
+
+    @And("I enter INF passenger count as {int}")
+    public void iEnterINFPassengerCountAsINF(int arg0) {
+        try{
+            ExtentLogger.createNode("I enter INF passenger count as " + arg0 + " ");
+            reservationPage.INFPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
+
+    }
+
+    @And("I enter INS passenger count as {int}")
+    public void iEnterINSPassengerCountAsINS(int arg0) {
+        try{
+            ExtentLogger.createNode("I enter INS passenger count as " + arg0 + " ");
+            reservationPage.INSPassengerCount(arg0);
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+        }
     }
 }
 

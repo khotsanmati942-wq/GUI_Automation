@@ -88,13 +88,13 @@ public class Home_Page extends TestBase {
 
     public void ClickOnReservationTab() {
         closeMdDialogIfPresent();
+        gl.waitForLoaderToDisappear();
         ExtentLogger.pass("I click on Reservation Tab");
       gl.ElementToBeClickable(homePageObjects.RESRVATION_LINK);
         homePageObjects.RESRVATION_LINK.click();
         ExtentLogger.attachScreenshotBase64();
         gl.waitForLoaderToDisappear();
     }
-
 
 
     public void ClickOnCheckinTab(){
@@ -135,6 +135,8 @@ public class Home_Page extends TestBase {
 
     public void ChangePOS(String POS, String currency) {
         try {
+            gl.waitForLoaderToDisappear();
+            gl.WaitForProfileLoad();
             ExtentLogger.pass("I Change the POS and Currency");
            gl.ElementToBeClickable(homePageObjects.POS_BUTTON);
            homePageObjects.POS_BUTTON.click();

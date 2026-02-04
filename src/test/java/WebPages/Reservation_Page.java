@@ -4,7 +4,9 @@ import GUI.ReportSection.ExtentLogger;
 import GUI.Test_Base.Generic;
 import GUI.Test_Base.PassengerData;
 import GUI.Test_Base.TestBase;
+import net.bytebuddy.asm.Advice;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -14,6 +16,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.util.List;
+import java.util.Map;
+
+import static GUI.Test_Base.Generic.generatePassenger;
 
 public class Reservation_Page extends TestBase {
     Reservation_Page.ReservationPageObject reservationPageObject;
@@ -21,7 +26,7 @@ public class Reservation_Page extends TestBase {
     PassengerData passenger;
     Home_Page.HomePageObjects homePageObjects;
 
-    public Reservation_Page(){
+    public Reservation_Page() {
 
         reservationPageObject = new ReservationPageObject();
         gl = new Generic();
@@ -32,7 +37,7 @@ public class Reservation_Page extends TestBase {
     }
 
 
-    public class ReservationPageObject{
+    public class ReservationPageObject {
 
         @FindBy(xpath = "//div[@class='ng-scope'][normalize-space()='New Order']")
         public WebElement NEW_ORDER_TAB;
@@ -70,14 +75,60 @@ public class Reservation_Page extends TestBase {
         @FindBy(xpath = "//div[@ng-repeat='flight in segment.Legs']//span[@role='button']")
         public List<WebElement> FLIGHT_AVAILABILTY;
 
-       @FindBy(xpath = "//button[normalize-space()='Price Quote']")
+        @FindBy(xpath = "//button[normalize-space()='Price Quote']")
         public WebElement PRICE_QUOTE;
 
         @FindBy(xpath = "//md-dialog//md-select")
         public WebElement PRICING_OPTION_DROPDOWN;
 
-       @FindBy(xpath = "//button[normalize-space()='Next']")
+        @FindBy(xpath = "//button[normalize-space()='Next']")
         public WebElement NEXT_BUTTON;
+
+        @FindBy(xpath = "//input[@name='surname']")
+        public WebElement SUR_NAME;
+
+        @FindBy(xpath = "//input[@name='firstName']")
+        public WebElement FIRST_NAME;
+
+        @FindBy(xpath = "//input[@class='md-datepicker-input']")
+        public WebElement BIRTH_DATE;
+
+        @FindBy(xpath = "//md-input-container[contains(@ng-repeat,'email in activePassenger.Emails')]//input")
+        public WebElement EMAIL_ID;
+
+        @FindBy(xpath = "(//md-select[contains(@ng-model,'personalInfo.model.Type')])[1]")
+        public WebElement PHONE_TYPE;
+
+        @FindBy(xpath = "//md-option[contains(@ng-value,'phoneType.Value')]/div[contains(@class,'md-text ng-binding')]")
+        public List<WebElement> TPYE_OF_PHONES;
+
+        @FindBy(xpath = "(//input[@name='countryCode'])[1]")
+        public WebElement COUNTRY_CODE;
+
+        @FindBy(xpath = "(//input[@name='Phone Number'])[1]")
+        public WebElement PHONE_NUMBER;
+
+        @FindBy(xpath = "//div[contains(@class,'ng-binding') and starts-with(normalize-space(),'(')]")
+        public List<WebElement> PASSENGER_TYPE_IDENTIFICATION;
+
+        @FindBy(xpath = "(//md-select[@aria-label='drop down'])[2]")
+        public WebElement GENDER_DROP_DOWN;
+
+        @FindBy(xpath = "//div[@ng-repeat='menuValue in menuCtrl.menuLabels']")
+        public List<WebElement> GENDER_OPTION;
+
+        @FindBy(xpath = "//button[normalize-space()='Book & File Fare']")
+        public WebElement BOOK_FILEFARE_BUTTON;
+
+        @FindBy(xpath = "//md-select[@ng-model='activePassenger.travelsWith']")
+        public WebElement TRAVEL_WITH;
+
+        @FindBy(xpath = "//md-option[contains(@ng-value,'adultPassenger.paxIndex')]")
+        public List<WebElement> TRAVEL_WITH_OPTION;
+
+        @FindBy(xpath = "//md-select[@aria-label='drop down']")
+        public WebElement GENDER_OPTION_INF;
+
     }
 
 
@@ -86,6 +137,7 @@ public class Reservation_Page extends TestBase {
         reservationPageObject.NEW_ORDER_TAB.click();
         gl.WaitForProfileLoad();
     }
+
     public void Selectitenary(String origin, String destination) {
         ExtentLogger.pass("I am entering origin, destination");
         try {
@@ -104,6 +156,7 @@ public class Reservation_Page extends TestBase {
         }
 
     }
+
     public void SelectDateForOneWayBooking(String date) {
         ExtentLogger.pass("I am entering date for one way booking");
         try {
@@ -118,13 +171,14 @@ public class Reservation_Page extends TestBase {
             ExtentLogger.fail("Step failed", e);
         }
     }
-    public void SelectReturnBooking(String date){
+
+    public void SelectReturnBooking(String date) {
         ExtentLogger.pass("I select the return flight date");
-        try{
+        try {
             gl.WaitForProfileLoad();
             reservationPageObject.RETURN_FLIGHT.click();
             gl.WaitForProfileLoad();
-           reservationPageObject.RETURN_DATE.sendKeys(Keys.CONTROL + "a");
+            reservationPageObject.RETURN_DATE.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.RETURN_DATE.sendKeys(Keys.DELETE);
             String newdate1 = gl.getDateFromOffset(date);
             gl.WaitForProfileLoad();
@@ -136,59 +190,66 @@ public class Reservation_Page extends TestBase {
         }
 
     }
-    public void AdultPassengerCount(String count){
-        try{
-            passenger.AdultCountset("AdultCount", count);
+
+    public void AdultPassengerCount(int count) {
+        try {
+            passenger.set(PassengerData.PassengerKey.ADULT_COUNT, count);
             ExtentLogger.pass("I enter Adult passenger Count");
             reservationPageObject.ADULT_COUNT.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.ADULT_COUNT.sendKeys(Keys.DELETE);
             gl.WaitForProfileLoad();
-            reservationPageObject.ADULT_COUNT.sendKeys((CharSequence) passenger.AdultCountget("AdultCount"));
+            reservationPageObject.ADULT_COUNT.sendKeys(String.valueOf(passenger.getInt(PassengerData.PassengerKey.ADULT_COUNT)
+            ));
+
             gl.WaitForProfileLoad();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
-    public void ChildPassengerCount(String count){
-        try{
-            passenger.ChildCountset("ChildCount", count);
+
+    public void ChildPassengerCount(int count) {
+        try {
+            passenger.set(PassengerData.PassengerKey.CHILD_COUNT, count);
             ExtentLogger.pass("I enter Child passenger Count");
             reservationPageObject.CHILD_COUNT.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.CHILD_COUNT.sendKeys(Keys.DELETE);
             gl.WaitForProfileLoad();
-            reservationPageObject.CHILD_COUNT.sendKeys((CharSequence) passenger.ChildCountget("ChildCount"));
+            reservationPageObject.CHILD_COUNT.sendKeys(String.valueOf(passenger.getInt(PassengerData.PassengerKey.CHILD_COUNT)));
             gl.WaitForProfileLoad();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
-    public void INFPassengerCount(String count){
-        try{
-            passenger.INFCountset("INFCount", count);
+
+    public void INFPassengerCount(int count) {
+        try {
+            passenger.set(PassengerData.PassengerKey.INF_COUNT, count);
             ExtentLogger.pass("I enter INF passenger Count");
             reservationPageObject.INF_COUNT.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.INF_COUNT.sendKeys(Keys.DELETE);
             gl.WaitForProfileLoad();
-            reservationPageObject.INF_COUNT.sendKeys((CharSequence) passenger.INFtCountget("INFCount"));
+            reservationPageObject.INF_COUNT.sendKeys(String.valueOf(passenger.getInt(PassengerData.PassengerKey.INF_COUNT)));
             gl.WaitForProfileLoad();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
-    public void INSPassengerCount(String count){
-        try{
-            passenger.INSCountset("INSCount", count);
+
+    public void INSPassengerCount(int count) {
+        try {
+            passenger.set(PassengerData.PassengerKey.INS_COUNT, count);
             ExtentLogger.pass("I enter INS passenger Count");
             reservationPageObject.INS_COUNT.sendKeys(Keys.CONTROL + "a");
             reservationPageObject.INS_COUNT.sendKeys(Keys.DELETE);
             gl.WaitForProfileLoad();
-            reservationPageObject.INS_COUNT.sendKeys((CharSequence) passenger.INStCountget("INSCount"));
+            reservationPageObject.INS_COUNT.sendKeys(String.valueOf(passenger.getInt(PassengerData.PassengerKey.INS_COUNT)));
             gl.WaitForProfileLoad();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
-    public void SerachButton(){
+
+    public void SerachButton() {
         try {
             ExtentLogger.pass("I click on search button");
             ExtentLogger.attachScreenshotBase64();
@@ -196,28 +257,28 @@ public class Reservation_Page extends TestBase {
             gl.waitForLoaderToDisappear();
             gl.ElementToBeClickable(homePageObjects.COPAAIRLINE_LOGO);
             ExtentLogger.attachScreenshotBase64();
-        } catch (Exception e){
+        } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }
     }
 
-    public void SelectSeatFromClass(String seattype){
+    public void SelectSeatFromClass(String seattype) {
         try {
             ExtentLogger.pass("I select the class of service");
             int adultCount = 0;
             int childCount = 0;
-            int infCount   = 0;
-            int insCount   = 0;
+            int infCount = 0;
+            int insCount = 0;
 
-            Object adt = passenger.AdultCountget("AdultCount");
-            Object chd = passenger.ChildCountget("ChildCount");
-            Object inf = passenger.INFtCountget("INFCount");
-            Object ins = passenger.INStCountget("INSCount");
+            Object adt = passenger.getInt(PassengerData.PassengerKey.ADULT_COUNT);
+            Object chd = passenger.getInt(PassengerData.PassengerKey.CHILD_COUNT);
+            Object inf = passenger.getInt(PassengerData.PassengerKey.INF_COUNT);
+            Object ins = passenger.getInt(PassengerData.PassengerKey.INS_COUNT);
 
             if (adt != null) adultCount = Integer.parseInt(adt.toString());
             if (chd != null) childCount = Integer.parseInt(chd.toString());
-            if (inf != null) infCount   = Integer.parseInt(inf.toString());
-            if (ins != null) insCount   = Integer.parseInt(ins.toString());
+            if (inf != null) infCount = Integer.parseInt(inf.toString());
+            if (ins != null) insCount = Integer.parseInt(ins.toString());
 
             int totalPaxCount = adultCount + childCount + infCount + insCount;
 
@@ -237,8 +298,7 @@ public class Reservation_Page extends TestBase {
 
 
                 }
-            }
-            else if(seattype.equalsIgnoreCase("Economy")){
+            } else if (seattype.equalsIgnoreCase("Economy")) {
                 for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
                     String seatText = seat.getText();
                     if (seatText.matches("^[YBMHQKFVUSOWELT].*")) {
@@ -252,8 +312,7 @@ public class Reservation_Page extends TestBase {
                     }
 
                 }
-            }
-            else{
+            } else {
                 Assert.fail("Seat not found");
             }
 
@@ -266,6 +325,7 @@ public class Reservation_Page extends TestBase {
         }
 
     }
+
     public void SelectPriceOption(String option) {
         try {
             ExtentLogger.pass("I select Pricing option");
@@ -299,5 +359,161 @@ public class Reservation_Page extends TestBase {
         }
     }
 
+    public void FillPassengerDetails() {
+        ExtentLogger.pass("I fill the passenger details information");
+
+        for (WebElement passegertype : reservationPageObject.PASSENGER_TYPE_IDENTIFICATION) {
+            if (passegertype.getText().contains("ADT")) {
+                passegertype.click();
+                gl.WaitForProfileLoad();
+                int i = 1;
+                Map<String, String> passenger = generatePassenger(i, "ADULT");
+                reservationPageObject.SUR_NAME.sendKeys(passenger.get("LAST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.FIRST_NAME.sendKeys(passenger.get("FIRST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.BIRTH_DATE.sendKeys(passenger.get("DOB"));
+                gl.WaitForProfileLoad();
+                String gender = passenger.get("GENDER");
+                reservationPageObject.GENDER_DROP_DOWN.click();
+                for (WebElement genderone : reservationPageObject.GENDER_OPTION) {
+                    if (gender.contains(genderone.getText().trim())) {
+                        gl.WaitForProfileLoad();
+                        genderone.click();
+                        gl.WaitForProfileLoad();
+                        break;
+                    }
+                }
+                if (!reservationPageObject.BOOK_FILEFARE_BUTTON.isEnabled()) {
+                    gl.WaitForProfileLoad();
+                    gl.ElementToBeClickable(reservationPageObject.EMAIL_ID);
+                    reservationPageObject.EMAIL_ID.sendKeys("Sanmati.khot@gmail.com");
+                    gl.WaitForProfileLoad();
+                    reservationPageObject.PHONE_TYPE.click();
+                    gl.WaitForProfileLoad();
+                    for (WebElement type : reservationPageObject.TPYE_OF_PHONES) {
+                        if (type.getText().contains("Home Phone")) {
+                            type.click();
+                            break;
+                        }
+                    }
+                    gl.WaitForProfileLoad();
+                    reservationPageObject.COUNTRY_CODE.sendKeys("US");
+                    gl.waitForLoaderToDisappear();
+                    reservationPageObject.COUNTRY_CODE.sendKeys(Keys.ENTER);
+                    gl.WaitForProfileLoad();
+                    reservationPageObject.PHONE_NUMBER.sendKeys("1234567890");
+                    gl.WaitForProfileLoad();
+                    ExtentLogger.attachScreenshotBase64();
+                }
+            } else if (passegertype.getText().contains("CHD")) {
+                passegertype.click();
+                gl.WaitForProfileLoad();
+                int i = 1;
+                Map<String, String> passenger = generatePassenger(i, "CHILD");
+                reservationPageObject.SUR_NAME.sendKeys(passenger.get("LAST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.FIRST_NAME.sendKeys(passenger.get("FIRST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.BIRTH_DATE.sendKeys(passenger.get("DOB"));
+                gl.WaitForProfileLoad();
+                String gender = passenger.get("GENDER");
+                reservationPageObject.GENDER_DROP_DOWN.click();
+                for (WebElement genderone : reservationPageObject.GENDER_OPTION) {
+                    if (gender.contains(genderone.getText().trim())) {
+                        gl.WaitForProfileLoad();
+                        genderone.click();
+                        gl.WaitForProfileLoad();
+                        break;
+                    }
+                }
+                if (!reservationPageObject.BOOK_FILEFARE_BUTTON.isEnabled()) {
+                    gl.WaitForProfileLoad();
+                    gl.ElementToBeClickable(reservationPageObject.EMAIL_ID);
+                    reservationPageObject.EMAIL_ID.sendKeys("Sanmati.khot@gmail.com");
+                    gl.WaitForProfileLoad();
+                    reservationPageObject.PHONE_TYPE.click();
+                    gl.WaitForProfileLoad();
+                    for (WebElement type : reservationPageObject.TPYE_OF_PHONES) {
+                        if (type.getText().contains("Home Phone")) {
+                            type.click();
+                            break;
+                        }
+                    }
+                    gl.WaitForProfileLoad();
+                    reservationPageObject.COUNTRY_CODE.sendKeys("US");
+                    gl.waitForLoaderToDisappear();
+                    reservationPageObject.COUNTRY_CODE.sendKeys(Keys.ENTER);
+                    gl.WaitForProfileLoad();
+                    reservationPageObject.PHONE_NUMBER.sendKeys("1234567890");
+                    gl.WaitForProfileLoad();
+                    ExtentLogger.attachScreenshotBase64();
+                }
+            } else if (passegertype.getText().contains("INS")) {
+                passegertype.click();
+                gl.WaitForProfileLoad();
+                int i = 1;
+                Map<String, String> passenger = generatePassenger(i, "INS");
+                reservationPageObject.SUR_NAME.sendKeys(passenger.get("LAST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.FIRST_NAME.sendKeys(passenger.get("FIRST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.BIRTH_DATE.sendKeys(passenger.get("DOB"));
+                gl.WaitForProfileLoad();
+                String gender = passenger.get("GENDER");
+                reservationPageObject.GENDER_OPTION_INF.click();
+                for (WebElement genderone : reservationPageObject.GENDER_OPTION) {
+                    if (gender.contains(genderone.getText().trim())) {
+                        gl.WaitForProfileLoad();
+                        genderone.click();
+                        gl.WaitForProfileLoad();
+                        break;
+                    }
+                }
+                gl.WaitForProfileLoad();
+                ExtentLogger.attachScreenshotBase64();
+
+            } else if (passegertype.getText().contains("INF")) {
+                WebDriverWait wait = new WebDriverWait(getDriver(), 20);
+                passegertype.click();
+                gl.WaitForProfileLoad();
+                int i = 1;
+                Map<String, String> passenger = generatePassenger(i, "INFANT");
+                reservationPageObject.SUR_NAME.sendKeys(passenger.get("LAST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.FIRST_NAME.sendKeys(passenger.get("FIRST_NAME"));
+                gl.WaitForProfileLoad();
+                reservationPageObject.BIRTH_DATE.sendKeys(passenger.get("DOB"));
+                gl.WaitForProfileLoad();
+                String gender = passenger.get("GENDER");
+                reservationPageObject.GENDER_OPTION_INF.click();
+                for (WebElement genderone : reservationPageObject.GENDER_OPTION) {
+                    if (gender.contains(genderone.getText().trim())) {
+                        gl.WaitForProfileLoad();
+                        genderone.click();
+                        gl.WaitForProfileLoad();
+                        break;
+                    }
+                }
+                wait.until(ExpectedConditions.elementToBeClickable(reservationPageObject.TRAVEL_WITH));
+                reservationPageObject.TRAVEL_WITH.click();
+
+                wait.until(ExpectedConditions.visibilityOfAllElements(reservationPageObject.TRAVEL_WITH_OPTION));
+
+                for (WebElement option : reservationPageObject.TRAVEL_WITH_OPTION) {
+                    option.click();
+                    break;
+                }
+                gl.WaitForProfileLoad();
+                ExtentLogger.attachScreenshotBase64();
+            }
+            reservationPageObject.BOOK_FILEFARE_BUTTON.click();
+            gl.waitForLoaderToDisappear();
+
+        }
+    }
+
+
 
 }
+
