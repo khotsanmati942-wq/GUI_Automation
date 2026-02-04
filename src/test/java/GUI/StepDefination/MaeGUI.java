@@ -20,7 +20,7 @@ public class MaeGUI extends StepManager {
     public void i_navigate_to_the_url() {
         try {
             ExtentLogger.createNode("I navigate to the URL");
-            TestBase.createDriver();
+            loginPage.launchURL();
         } catch (Exception e) {
             ExtentLogger.fail("Step failed", e);
         }

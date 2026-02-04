@@ -5,16 +5,14 @@ import GUI.Test_Base.Generic;
 import GUI.Test_Base.PassengerData;
 import GUI.Test_Base.TestBase;
 import net.bytebuddy.asm.Advice;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -262,75 +260,184 @@ public class Reservation_Page extends TestBase {
         }
     }
 
-    public void SelectSeatFromClass(String seattype) {
-        try {
-            ExtentLogger.pass("I select the class of service");
-            int adultCount = 0;
-            int childCount = 0;
-            int infCount = 0;
-            int insCount = 0;
+//    public void SelectSeatFromClass(String seattype) {
+//        try {
+//            ExtentLogger.pass("I select the class of service");
+//            int adultCount = 0;
+//            int childCount = 0;
+//            int infCount = 0;
+//            int insCount = 0;
+//
+//            Object adt = passenger.getInt(PassengerData.PassengerKey.ADULT_COUNT);
+//            Object chd = passenger.getInt(PassengerData.PassengerKey.CHILD_COUNT);
+//            Object inf = passenger.getInt(PassengerData.PassengerKey.INF_COUNT);
+//            Object ins = passenger.getInt(PassengerData.PassengerKey.INS_COUNT);
+//
+//            if (adt != null) adultCount = Integer.parseInt(adt.toString());
+//            if (chd != null) childCount = Integer.parseInt(chd.toString());
+//            if (inf != null) infCount = Integer.parseInt(inf.toString());
+//            if (ins != null) insCount = Integer.parseInt(ins.toString());
+//
+//            int totalPaxCount = adultCount + childCount + infCount + insCount;
+//
+//
+//            if (seattype.equalsIgnoreCase("Business")) {
+//                for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
+//                    String seatText = seat.getText();
+//                    if (seatText.matches("^[CJDR].*")) {
+//                        int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
+//                        if (seatNumber > totalPaxCount) {
+//                            seat.click();
+//                            ExtentLogger.attachScreenshotBase64();
+//                            gl.WaitForProfileLoad();
+//                            break;// optional: stop after first valid seat
+//                        }
+//                    }
+//
+//
+//                }
+//            } else if (seattype.equalsIgnoreCase("Economy")) {
+//                for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
+//                    String seatText = seat.getText();
+//                    if (seatText.matches("^[YBMHQKFVUSOWELT].*")) {
+//                        int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
+//                        if (seatNumber > totalPaxCount) {
+//                            seat.click();
+//                            ExtentLogger.attachScreenshotBase64();
+//                            gl.WaitForProfileLoad();
+//                            break;   // optional: stop after first valid seat
+//                        }
+//                    }
+//
+//                }
+//            } else {
+//                Assert.fail("Seat not found");
+//            }
+//
+//            reservationPageObject.PRICE_QUOTE.click();
+//            gl.WaitForProfileLoad();
+//            ExtentLogger.attachScreenshotBase64();
+//
+//        } catch (Exception e) {
+//            ExtentLogger.fail("Step failed", e);
+//        }
+//
+//    }
+public void SelectSeatFromClass(String seattype) {
 
-            Object adt = passenger.getInt(PassengerData.PassengerKey.ADULT_COUNT);
-            Object chd = passenger.getInt(PassengerData.PassengerKey.CHILD_COUNT);
-            Object inf = passenger.getInt(PassengerData.PassengerKey.INF_COUNT);
-            Object ins = passenger.getInt(PassengerData.PassengerKey.INS_COUNT);
+    try {
 
-            if (adt != null) adultCount = Integer.parseInt(adt.toString());
-            if (chd != null) childCount = Integer.parseInt(chd.toString());
-            if (inf != null) infCount = Integer.parseInt(inf.toString());
-            if (ins != null) insCount = Integer.parseInt(ins.toString());
+        ExtentLogger.pass("I select the class of service");
 
-            int totalPaxCount = adultCount + childCount + infCount + insCount;
+        WebDriver driver = TestBase.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
 
+        // WAIT FOR LOADER TO DISAPPEAR
+        gl.waitForLoaderToDisappear();
+        gl.WaitForProfileLoad();
 
-            if (seattype.equalsIgnoreCase("Business")) {
-                for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
-                    String seatText = seat.getText();
-                    if (seatText.matches("^[CJDR].*")) {
-                        int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
-                        if (seatNumber > totalPaxCount) {
-                            seat.click();
-                            ExtentLogger.attachScreenshotBase64();
-                            gl.WaitForProfileLoad();
-                            break;// optional: stop after first valid seat
-                        }
+        // WAIT UNTIL FLIGHT AVAILABILITY LIST IS VISIBLE
+        wait.until(ExpectedConditions.visibilityOfAllElements(reservationPageObject.FLIGHT_AVAILABILTY));
+
+        int adultCount = passenger.getInt(PassengerData.PassengerKey.ADULT_COUNT);
+        int childCount = passenger.getInt(PassengerData.PassengerKey.CHILD_COUNT);
+        int infCount = passenger.getInt(PassengerData.PassengerKey.INF_COUNT);
+        int insCount = passenger.getInt(PassengerData.PassengerKey.INS_COUNT);
+
+        int totalPaxCount = adultCount + childCount + infCount + insCount;
+
+        boolean seatSelected = false;
+
+        if (seattype.equalsIgnoreCase("Business")) {
+
+            for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
+
+                String seatText = seat.getText();
+
+                if (seatText.matches("^[CJDR].*")) {
+
+                    int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
+
+                    if (seatNumber > totalPaxCount) {
+
+                        wait.until(ExpectedConditions.elementToBeClickable(seat));
+
+                        seat.click();
+
+                        ExtentLogger.attachScreenshotBase64();
+
+                        gl.WaitForProfileLoad();
+
+                        seatSelected = true;
+
+                        break;
                     }
-
-
                 }
-            } else if (seattype.equalsIgnoreCase("Economy")) {
-                for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
-                    String seatText = seat.getText();
-                    if (seatText.matches("^[YBMHQKFVUSOWELT].*")) {
-                        int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
-                        if (seatNumber > totalPaxCount) {
-                            seat.click();
-                            ExtentLogger.attachScreenshotBase64();
-                            gl.WaitForProfileLoad();
-                            break;   // optional: stop after first valid seat
-                        }
-                    }
-
-                }
-            } else {
-                Assert.fail("Seat not found");
             }
 
-            reservationPageObject.PRICE_QUOTE.click();
-            gl.WaitForProfileLoad();
-            ExtentLogger.attachScreenshotBase64();
+        } else if (seattype.equalsIgnoreCase("Economy")) {
 
-        } catch (Exception e) {
-            ExtentLogger.fail("Step failed", e);
+            for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
+
+                String seatText = seat.getText();
+
+                if (seatText.matches("^[YBMHQKFVUSOWELT].*")) {
+
+                    int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
+
+                    if (seatNumber > totalPaxCount) {
+
+                        wait.until(ExpectedConditions.elementToBeClickable(seat));
+
+                        seat.click();
+
+                        ExtentLogger.attachScreenshotBase64();
+
+                        gl.WaitForProfileLoad();
+
+                        seatSelected = true;
+
+                        break;
+                    }
+                }
+            }
+
+        } else {
+            Assert.fail("Invalid seat type passed: " + seattype);
         }
 
+        if (!seatSelected) {
+            Assert.fail("No seat found matching criteria for: " + seattype);
+        }
+
+        // 🔥 MOST IMPORTANT FIX – WAIT FOR PRICE QUOTE BUTTON
+
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector("md-backdrop.md-click-catcher")));
+
+        WebElement priceQuote = wait.until(
+                ExpectedConditions.elementToBeClickable(reservationPageObject.PRICE_QUOTE)
+        );
+
+        priceQuote.click();
+
+        gl.WaitForProfileLoad();
+
+        ExtentLogger.attachScreenshotBase64();
+
+    } catch (Exception e) {
+
+        ExtentLogger.fail("Select class of service step failed", e);
+
+        throw new RuntimeException("SelectSeatFromClass failed", e);
     }
+}
 
     public void SelectPriceOption(String option) {
         try {
             ExtentLogger.pass("I select Pricing option");
 
-            WebDriverWait wait = new WebDriverWait(getDriver(), 30);
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
 
             gl.waitForLoaderToDisappear();
 
@@ -474,7 +581,7 @@ public class Reservation_Page extends TestBase {
                 ExtentLogger.attachScreenshotBase64();
 
             } else if (passegertype.getText().contains("INF")) {
-                WebDriverWait wait = new WebDriverWait(getDriver(), 20);
+                WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
                 passegertype.click();
                 gl.WaitForProfileLoad();
                 int i = 1;

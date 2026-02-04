@@ -112,7 +112,7 @@ public class Home_Page extends TestBase {
     }
 
     private void selectMdOptionByText(String text) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), 20);
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
 
         By option = By.xpath("//md-option//div[normalize-space()='" + text + "']");
@@ -127,7 +127,7 @@ public class Home_Page extends TestBase {
 
     private void waitForMdOptionsToClose() {
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), 30);
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
                 wait.until(ExpectedConditions.invisibilityOfElementLocated(
                         By.xpath("//md-option")
                 ));
@@ -170,7 +170,7 @@ public class Home_Page extends TestBase {
         if (!homePageObjects.SALES_REPORT_LOGIN_REMINDR.isEmpty()) {
             homePageObjects.OK_BUTTON.click();
             // Wait till dialog is truly gone / detached
-            new WebDriverWait(getDriver(), 30).until(ExpectedConditions.stalenessOf(homePageObjects.SALES_REPORT_LOGIN_REMINDR.get(0)));
+            new WebDriverWait(getDriver(), Duration.ofSeconds(30)).until(ExpectedConditions.stalenessOf(homePageObjects.SALES_REPORT_LOGIN_REMINDR.get(0)));
             gl.WaitForProfileLoad();
             homePageObjects.RESERVATION_TAB.click();
             gl.WaitForProfileLoad();

@@ -4,6 +4,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -22,13 +23,13 @@ public class Generic extends TestBase {
         }
     }
     public void ElementToBeClickable(By locator) {
-       wait = new WebDriverWait(getDriver(), 30);
+       wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
         wait.until(ExpectedConditions.elementToBeClickable(locator));
 
     }
 
     public void ElementToBeClickable(WebElement element) {
-        wait = new WebDriverWait(getDriver(), 30);
+        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
         wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
@@ -48,7 +49,7 @@ public class Generic extends TestBase {
 
     public void waitForLoaderToDisappear() {
         try {
-            WebDriverWait wait = new WebDriverWait(getDriver(), 120);
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(120));
             wait.until(ExpectedConditions.invisibilityOfElementLocated(
                     By.cssSelector(".loading-wrapper")
             ));
