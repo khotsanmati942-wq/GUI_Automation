@@ -11,7 +11,14 @@ public class PassengerData {
         ADULT_COUNT,
         CHILD_COUNT,
         INF_COUNT,
-        INS_COUNT
+        INS_COUNT,
+        PNR,
+        FIRST_SEG_FLIGHT_DATE,
+        FIRST_SEG_ORIGIN_CITY,
+        FIRST_SEG_FLIGHT_NUMBER,
+        NATIVE_SHARES_PNR
+
+
     }
 
     // Generic setter (supports String, Integer, etc.)
@@ -30,6 +37,7 @@ public class PassengerData {
     }
 
     public String getString(PassengerKey key) {
+
         return (String) data.get(key);
     }
 

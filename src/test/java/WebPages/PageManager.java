@@ -5,6 +5,9 @@ public class PageManager {
     Login_Page loginPage;
     Home_Page homePage;
     Reservation_Page reservationPage;
+    Chcekin_Page chcekinPage;
+    Gate_Page gatePage;
+    Native_Shares nativeShares;
 
     public Login_Page getLoginPage() {
         if (loginPage == null) {
@@ -26,6 +29,31 @@ public class PageManager {
         }
         return reservationPage;
         }
+
+        public Chcekin_Page getChcekinPage(){
+        if (chcekinPage == null){
+            chcekinPage = new Chcekin_Page();
         }
+        return chcekinPage;
+        }
+
+
+    public Gate_Page getGatePage(){
+        if (gatePage == null){
+            gatePage = new Gate_Page();
+        }
+        return gatePage;
+    }
+
+    public Native_Shares getNativePage(){
+        if(nativeShares == null) {
+            nativeShares = new Native_Shares();
+        }
+        return nativeShares;
+        }
+    }
+
+
+
 
 

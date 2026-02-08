@@ -4,9 +4,11 @@ import GUI.ReportSection.ExtentLogger;
 import GUI.Test_Base.Generic;
 import GUI.Test_Base.PassengerData;
 import GUI.Test_Base.TestBase;
-import net.bytebuddy.asm.Advice;
+import org.checkerframework.checker.fenum.qual.FenumUnqualified;
+import org.checkerframework.checker.initialization.qual.FBCBottom;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -15,27 +17,26 @@ import org.testng.Assert;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import static GUI.Test_Base.Generic.generatePassenger;
 
 public class Reservation_Page extends TestBase {
     Reservation_Page.ReservationPageObject reservationPageObject;
     Generic gl;
-    PassengerData passenger;
     Home_Page.HomePageObjects homePageObjects;
 
     public Reservation_Page() {
 
         reservationPageObject = new ReservationPageObject();
         gl = new Generic();
-        passenger = new PassengerData();
         homePageObjects = new Home_Page.HomePageObjects();
         PageFactory.initElements(getDriver(), reservationPageObject);
         PageFactory.initElements(getDriver(), homePageObjects);
     }
 
 
-    public class ReservationPageObject {
+    public static class ReservationPageObject {
 
         @FindBy(xpath = "//div[@class='ng-scope'][normalize-space()='New Order']")
         public WebElement NEW_ORDER_TAB;
@@ -127,9 +128,47 @@ public class Reservation_Page extends TestBase {
         @FindBy(xpath = "//md-select[@aria-label='drop down']")
         public WebElement GENDER_OPTION_INF;
 
+        @FindBy(xpath = "//button[normalize-space()='Check Out']")
+        public WebElement CHECK_OUT_BUTTON;
+
+        @FindBy(xpath = "//md-select[@id='paymentIndex.paymentType']")
+        public WebElement PAYMENT_DROPDOWN;
+
+        @FindBy(xpath = "(//md-option[contains(@class,'ng-scope md-ink-ripple')])//div")
+        public List<WebElement> TYPE_OF_PAYMENT;
+
+        @FindBy(xpath = "//button[normalize-space()='Pay']")
+        public WebElement PAY_BUTTON;
+
+        @FindBy(xpath = "//md-select[contains(@aria-label,'drop down')]")
+        public WebElement LANGUAGE_DROPDOWN;
+
+        @FindBy(xpath = "//md-option[contains(@class,'hpe-pssgui-menu-option ng-scope')]//div")
+        public List<WebElement> LANGUAGE_TYPES;
+
+        @FindBy(xpath = "//button[normalize-space()='Email']")
+        public WebElement EMAIL_BUTTON;
+
+        @FindBy(xpath = "//button[normalize-space()='Done']")
+        public WebElement DONE_BUTTON;
+
+
+        @FindBy(xpath = "//div[@class='pssgui-design-sub-heading-2 ng-binding']")
+        public WebElement PNR;
+
+        @FindBy(xpath = "//td[@class='flight-name']//span")
+        public WebElement FLIGHT_NUMBER;
+
+        @FindBy(xpath = "//span[contains(@ng-click,'flightResult.enableInlineEdit')]")
+        public WebElement DATE_OF_JOURNEY;
+
+        @FindBy(xpath = "//div[contains(@airport-code,'originDestination.origin')]")
+        public WebElement ORIGIN_CITY;
+
+
+
+
     }
-
-
     public void ClickOnNewOrderTab() {
         gl.waitForLoaderToDisappear();
         reservationPageObject.NEW_ORDER_TAB.click();
@@ -260,69 +299,6 @@ public class Reservation_Page extends TestBase {
         }
     }
 
-//    public void SelectSeatFromClass(String seattype) {
-//        try {
-//            ExtentLogger.pass("I select the class of service");
-//            int adultCount = 0;
-//            int childCount = 0;
-//            int infCount = 0;
-//            int insCount = 0;
-//
-//            Object adt = passenger.getInt(PassengerData.PassengerKey.ADULT_COUNT);
-//            Object chd = passenger.getInt(PassengerData.PassengerKey.CHILD_COUNT);
-//            Object inf = passenger.getInt(PassengerData.PassengerKey.INF_COUNT);
-//            Object ins = passenger.getInt(PassengerData.PassengerKey.INS_COUNT);
-//
-//            if (adt != null) adultCount = Integer.parseInt(adt.toString());
-//            if (chd != null) childCount = Integer.parseInt(chd.toString());
-//            if (inf != null) infCount = Integer.parseInt(inf.toString());
-//            if (ins != null) insCount = Integer.parseInt(ins.toString());
-//
-//            int totalPaxCount = adultCount + childCount + infCount + insCount;
-//
-//
-//            if (seattype.equalsIgnoreCase("Business")) {
-//                for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
-//                    String seatText = seat.getText();
-//                    if (seatText.matches("^[CJDR].*")) {
-//                        int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
-//                        if (seatNumber > totalPaxCount) {
-//                            seat.click();
-//                            ExtentLogger.attachScreenshotBase64();
-//                            gl.WaitForProfileLoad();
-//                            break;// optional: stop after first valid seat
-//                        }
-//                    }
-//
-//
-//                }
-//            } else if (seattype.equalsIgnoreCase("Economy")) {
-//                for (WebElement seat : reservationPageObject.FLIGHT_AVAILABILTY) {
-//                    String seatText = seat.getText();
-//                    if (seatText.matches("^[YBMHQKFVUSOWELT].*")) {
-//                        int seatNumber = Integer.parseInt(seatText.replaceAll("\\D+", ""));
-//                        if (seatNumber > totalPaxCount) {
-//                            seat.click();
-//                            ExtentLogger.attachScreenshotBase64();
-//                            gl.WaitForProfileLoad();
-//                            break;   // optional: stop after first valid seat
-//                        }
-//                    }
-//
-//                }
-//            } else {
-//                Assert.fail("Seat not found");
-//            }
-//
-//            reservationPageObject.PRICE_QUOTE.click();
-//            gl.WaitForProfileLoad();
-//            ExtentLogger.attachScreenshotBase64();
-//
-//        } catch (Exception e) {
-//            ExtentLogger.fail("Step failed", e);
-//        }
-//
-//    }
 public void SelectSeatFromClass(String seattype) {
 
     try {
@@ -616,10 +592,99 @@ public void SelectSeatFromClass(String seattype) {
             }
             reservationPageObject.BOOK_FILEFARE_BUTTON.click();
             gl.waitForLoaderToDisappear();
+            ExtentLogger.attachScreenshotBase64();
 
         }
+
+        String pnrText = reservationPageObject.PNR.getText().trim();
+        passenger.set(PassengerData.PassengerKey.PNR, pnrText);
+        String flight = reservationPageObject.FLIGHT_NUMBER.getText();
+        String number = flight.replaceAll("\\D", "");
+        passenger.set(PassengerData.PassengerKey.FIRST_SEG_FLIGHT_NUMBER, number);
+        String output = reservationPageObject.DATE_OF_JOURNEY.getText().trim();
+        String date = java.time.LocalDate
+                .parse(output, java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yyyy"))
+                .format(java.time.format.DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        passenger.set(PassengerData.PassengerKey.FIRST_SEG_FLIGHT_DATE, date);
+        String origin = reservationPageObject.ORIGIN_CITY.getText().trim();
+        passenger.set(PassengerData.PassengerKey.FIRST_SEG_ORIGIN_CITY, origin);
     }
 
+
+    public void PerformPayment(String type) {
+        try {
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+            JavascriptExecutor js = (JavascriptExecutor) getDriver();
+
+            ExtentLogger.pass("I perform Payment");
+
+            gl.WaitForProfileLoad();
+            ExtentLogger.attachScreenshotBase64();
+            gl.ElementToBeClickable(reservationPageObject.CHECK_OUT_BUTTON);
+            reservationPageObject.CHECK_OUT_BUTTON.click();
+
+            gl.waitForLoaderToDisappear();
+            gl.WaitForProfileLoad();
+            ExtentLogger.attachScreenshotBase64();
+
+            gl.ElementToBeClickable(reservationPageObject.PAYMENT_DROPDOWN);
+            reservationPageObject.PAYMENT_DROPDOWN.click();
+
+            // Wait for Angular overlay to disappear
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                    By.cssSelector(".cdk-overlay-backdrop, .md-dialog-backdrop, .mat-overlay-backdrop")));
+
+            wait.until(ExpectedConditions.visibilityOfAllElements(reservationPageObject.TYPE_OF_PAYMENT));
+
+            for (WebElement payment : reservationPageObject.TYPE_OF_PAYMENT) {
+                if (payment.getText().trim().equalsIgnoreCase(type)) {
+                    js.executeScript("arguments[0].click();", payment);
+                    break;
+                }
+            }
+
+            gl.waitForLoaderToDisappear();
+            ExtentLogger.attachScreenshotBase64();
+
+            gl.ElementToBeClickable(reservationPageObject.PAY_BUTTON);
+            js.executeScript("arguments[0].click();", reservationPageObject.PAY_BUTTON);
+
+            gl.waitForLoaderToDisappear();
+            gl.WaitForProfileLoad();
+
+            gl.ElementToBeClickable(reservationPageObject.LANGUAGE_DROPDOWN);
+            reservationPageObject.LANGUAGE_DROPDOWN.click();
+
+            wait.until(ExpectedConditions.visibilityOfAllElements(reservationPageObject.LANGUAGE_TYPES));
+
+            for (WebElement language : reservationPageObject.LANGUAGE_TYPES) {
+                if (language.getText().trim().equalsIgnoreCase("ENGLISH")) {
+                    js.executeScript("arguments[0].click();", language);
+                    break;
+                }
+            }
+
+            gl.waitForLoaderToDisappear();
+
+            gl.ElementToBeClickable(reservationPageObject.EMAIL_BUTTON);
+            ExtentLogger.attachScreenshotBase64();
+            reservationPageObject.EMAIL_BUTTON.click();
+            gl.waitForLoaderToDisappear();
+            ExtentLogger.attachScreenshotBase64();
+
+            gl.ElementToBeClickable(reservationPageObject.DONE_BUTTON);
+            reservationPageObject.DONE_BUTTON.click();
+
+            gl.waitForLoaderToDisappear();
+
+            gl.ElementToBeClickable(homePageObjects.COPAAIRLINE_LOGO);
+            ExtentLogger.attachScreenshotBase64();
+
+        } catch (Exception e) {
+            ExtentLogger.fail("Step failed", e);
+            throw e;
+        }
+    }
 
 
 }

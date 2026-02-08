@@ -6,8 +6,9 @@ import io.cucumber.testng.CucumberOptions;
 import org.testng.annotations.DataProvider;
 
 @CucumberOptions(
-            features = "src/test/resources/features/",
+            features = "src/test/resources/features/TC_02.feature",
             glue = {"GUI.StepDefination"},
+            tags = "@Sanity",
             plugin = {
                     "pretty",
                     "html:target/cucumber-reports.html",

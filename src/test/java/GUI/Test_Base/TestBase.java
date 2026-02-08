@@ -74,7 +74,9 @@ import java.time.Duration;
 
 public class TestBase {
 
+
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    protected static PassengerData passenger = new PassengerData();
 
     public static WebDriver getDriver() {
         if (driver.get() == null) {

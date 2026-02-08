@@ -183,9 +183,11 @@ public class Home_Page extends TestBase {
             homePageObjects.CLOSE_REPORT_BUTTON.click();
             gl.waitForLoaderToDisappear();
             homePageObjects.CLOSE_REPORT_BUTTON_NEW.click();
+            gl.waitForLoaderToDisappear();
             gl.WaitForProfileLoad();
             homePageObjects.COPAAIRLINE_LOGO.click();
             gl.WaitForProfileLoad();
+
 
         }
     }

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Generic extends TestBase {
@@ -163,8 +164,27 @@ public class Generic extends TestBase {
     }
 
 
+    public String getRandomPassengerName() {
+        String lastName = getRandomString(3);
+        String firstName = getRandomString(4);
+        return "-"+ lastName + "/" + firstName;
+    }
+
+    private static String getRandomString(int length) {
+        String alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder sb = new StringBuilder(length);
+        Random random = new Random();
+
+        for (int i = 0; i < length; i++) {
+            sb.append(alphabets.charAt(random.nextInt(alphabets.length())));
+        }
+        return sb.toString();
+    }
 
 }
+
+
+
 
 
 
